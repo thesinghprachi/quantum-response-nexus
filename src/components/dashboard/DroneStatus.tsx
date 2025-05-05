@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Drone, Battery, Package, AlertCircle } from 'lucide-react';
+import { Plane, Battery, Package, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface DroneItemProps {
@@ -34,7 +34,7 @@ const DroneItem = ({ id, model, status, battery, payload, mission, lastPing }: D
     <div className="border rounded-md p-3 bg-card">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <Drone className="h-5 w-5 text-accent mr-2" />
+          <Plane className="h-5 w-5 text-accent mr-2" />
           <span className="font-medium">{id}</span>
         </div>
         <Badge variant="outline" className={`text-xs ${statusColor[status]}`}>
@@ -95,7 +95,7 @@ const DroneStatus = () => {
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-lg">
-          <Drone className="h-5 w-5 text-accent" />
+          <Plane className="h-5 w-5 text-accent" />
           Drone Fleet Status
         </CardTitle>
       </CardHeader>

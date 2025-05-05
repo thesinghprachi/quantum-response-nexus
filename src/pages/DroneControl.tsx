@@ -1,10 +1,9 @@
-
 import React from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Drone, Battery, Package, AlertCircle, RefreshCw, Plus, BarChart3, Zap, Map, Wrench } from 'lucide-react';
+import { Plane, Battery, Package, AlertCircle, RefreshCw, Plus, BarChart3, Zap, Map, Wrench } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const DroneControl = () => {
@@ -22,7 +21,7 @@ const DroneControl = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Drone className="h-5 w-5 text-accent" />
+                <Plane className="h-5 w-5 text-accent" />
                 Active Drone Missions
                 <div className="ml-auto flex gap-2">
                   <Button size="sm" variant="outline">
@@ -336,7 +335,7 @@ const DroneControl = () => {
                   <h3 className="font-medium text-sm mb-2">Current Payload Status</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
                     <div className="flex flex-col items-center justify-center bg-muted p-2 rounded-md">
-                      <Drone className="h-5 w-5 text-accent mb-1" />
+                      <Plane className="h-5 w-5 text-accent mb-1" />
                       <div className="text-xs text-muted-foreground">Max Capacity</div>
                       <div className="text-sm font-medium">15 kg</div>
                     </div>
@@ -401,7 +400,7 @@ const DroneCard = ({ id, model, status, battery, mission, lastUpdate, altitude, 
       <div className="flex justify-between items-start mb-3">
         <div className="flex items-center">
           <div className={`${status === 'active' || status === 'returning' ? 'animate-float-drone' : ''} mr-2`}>
-            <Drone className="h-5 w-5 text-accent" />
+            <Plane className="h-5 w-5 text-accent" />
           </div>
           <div>
             <div className="font-medium">{id}</div>
