@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,11 +6,12 @@ import { Cloud, Search, Download, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { SatelliteData } from '@/types/database';
 
 const SatelliteWeatherData = () => {
   const [loading, setLoading] = useState(false);
   const [dataType, setDataType] = useState('flood');
-  const [satelliteData, setSatelliteData] = useState<any>(null);
+  const [satelliteData, setSatelliteData] = useState<SatelliteData | null>(null);
   const { toast } = useToast();
 
   const fetchSatelliteData = async () => {
@@ -29,7 +29,7 @@ const SatelliteWeatherData = () => {
       // });
 
       // Simulate API response for demonstration
-      const simulatedResponse = {
+      const simulatedResponse: SatelliteData = {
         id: crypto.randomUUID(),
         location_name: location.name,
         coordinates: location.coordinates,
@@ -49,14 +49,9 @@ const SatelliteWeatherData = () => {
       setSatelliteData(simulatedResponse);
       
       // Save to Supabase
-      const { error } = await supabase.from('satellite_data').insert({
-        location_name: simulatedResponse.location_name,
-        coordinates: simulatedResponse.coordinates,
-        data_type: simulatedResponse.data_type,
-        risk_level: simulatedResponse.risk_level,
-        imagery_url: simulatedResponse.imagery_url,
-        prediction_data: simulatedResponse.prediction_data
-      });
+      const { error } = await supabase
+        .from('satellite_data')
+        .insert(simulatedResponse);
       
       if (error) {
         console.error('Error saving satellite data:', error);
@@ -135,13 +130,13 @@ const SatelliteWeatherData = () => {
                 <div className="text-sm text-muted-foreground mb-2">Location: {satelliteData.location_name}</div>
                 <div className="flex items-center mb-2">
                   <span className="text-sm text-muted-foreground mr-2">Risk Level:</span>
-                  <Badge className={getRiskColor(satelliteData.risk_level)}>
-                    {satelliteData.risk_level.toUpperCase()}
+                  <Badge className={getRiskColor(satelliteData.risk_level || 'low')}>
+                    {satelliteData.risk_level?.toUpperCase()}
                   </Badge>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-2">
-                  {dataType === 'flood' && (
+                  {dataType === 'flood' && satelliteData.prediction_data?.flood_probability !== undefined && (
                     <div className="bg-primary/20 p-2 rounded">
                       <div className="text-xs text-muted-foreground">Flood Probability</div>
                       <div className="text-lg font-semibold">
@@ -150,7 +145,7 @@ const SatelliteWeatherData = () => {
                     </div>
                   )}
                   
-                  {dataType === 'landslide' && (
+                  {dataType === 'landslide' && satelliteData.prediction_data?.landslide_probability !== undefined && (
                     <div className="bg-primary/20 p-2 rounded">
                       <div className="text-xs text-muted-foreground">Landslide Probability</div>
                       <div className="text-lg font-semibold">
@@ -162,7 +157,7 @@ const SatelliteWeatherData = () => {
                   <div className="bg-primary/20 p-2 rounded">
                     <div className="text-xs text-muted-foreground">Safe Routes</div>
                     <div className="text-lg font-semibold">
-                      {satelliteData.prediction_data.safe_evacuation_routes.length}
+                      {satelliteData.prediction_data?.safe_evacuation_routes?.length || 0}
                     </div>
                   </div>
                 </div>

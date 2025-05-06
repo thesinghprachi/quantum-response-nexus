@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,6 +5,7 @@ import { Mic, MicOff, Volume, VolumeX } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { VoiceCommand } from '@/types/database';
 
 const VoiceEmergencyInput = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -87,14 +87,19 @@ const VoiceEmergencyInput = () => {
         setUrgencyLevel(simulatedResponse.urgencyLevel);
         
         // Save to Supabase
-        const { error } = await supabase.from('voice_commands').insert({
+        const voiceCommandData: VoiceCommand = {
+          id: crypto.randomUUID(),
           command_text: simulatedResponse.text,
           original_language: simulatedResponse.detectedLanguage,
           translated_text: simulatedResponse.translatedText,
           target_language: simulatedResponse.targetLanguage,
           urgency_level: simulatedResponse.urgencyLevel,
           location_data: { lat: 37.7749, lng: -122.4194 }, // Simulated location
-        });
+        };
+        
+        const { error } = await supabase
+          .from('voice_commands')
+          .insert(voiceCommandData);
         
         if (error) {
           console.error('Error saving voice command:', error);
@@ -110,7 +115,7 @@ const VoiceEmergencyInput = () => {
           });
         }
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error processing audio:', error);
       toast({
         variant: "destructive",

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,10 +13,9 @@ import VoiceEmergencyInput from '@/components/analytics/VoiceEmergencyInput';
 import SatelliteWeatherData from '@/components/analytics/SatelliteWeatherData';
 import { 
   ChartContainer, 
-  ChartTooltip, 
-  ChartTooltipContent 
+  ChartTooltip
 } from '@/components/ui/chart'; 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, TooltipProps } from 'recharts';
 
 const Analytics = () => {
   // Sample data for the chart
@@ -120,14 +118,7 @@ const Analytics = () => {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
-                    <ChartTooltip
-                      content={props => (
-                        <ChartTooltipContent
-                          {...props}
-                          className="bg-background"
-                        />
-                      )}
-                    />
+                    <ChartTooltip />
                     <Bar dataKey="value" />
                   </BarChart>
                 </ResponsiveContainer>
