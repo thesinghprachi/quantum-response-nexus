@@ -1,11 +1,33 @@
 
 import React from 'react';
-import { Bell, Menu, User } from 'lucide-react';
+import { Bell, Menu, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from '@/hooks/use-toast';
 
 const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    // Remove auth token
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_role');
+    
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out of your account",
+    });
+    
+    // Redirect to login page
+    navigate('/sign-in');
+  };
 
   return (
     <header className="bg-primary py-3 px-4 flex items-center justify-between shadow-md">
@@ -26,9 +48,19 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
           <Bell size={20} />
           <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-secondary"></span>
         </Button>
-        <Button variant="ghost" size="icon" className="text-primary-foreground">
-          <User size={20} />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="text-primary-foreground">
+              <User size={20} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
