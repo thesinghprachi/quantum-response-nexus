@@ -1,1 +1,8 @@
+
 project_id = "hzvysykldafzyywlaske"
+
+[functions.voice-processing]
+verify_jwt = true
+
+[functions.satellite-data]
+verify_jwt = true

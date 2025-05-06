@@ -5,9 +5,30 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { BarChart3, PieChart, LineChart, ArrowUp, ArrowDown, Calendar, Clock, Download, Filter, RefreshCw } from 'lucide-react';
+import { 
+  BarChart3, PieChart, LineChart, ArrowUp, ArrowDown, 
+  Calendar, Clock, Download, Filter, RefreshCw,
+  Volume, Cloud
+} from 'lucide-react';
+import VoiceEmergencyInput from '@/components/analytics/VoiceEmergencyInput';
+import SatelliteWeatherData from '@/components/analytics/SatelliteWeatherData';
+import { 
+  ChartContainer, 
+  ChartTooltip, 
+  ChartTooltipContent 
+} from '@/components/ui/chart'; 
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 
 const Analytics = () => {
+  // Sample data for the chart
+  const responseData = [
+    { name: 'Flood', value: 32, fill: '#3b82f6' },
+    { name: 'Fire', value: 24, fill: '#ef4444' },
+    { name: 'Earthquake', value: 18, fill: '#f59e0b' },
+    { name: 'Hurricane', value: 27, fill: '#8b5cf6' },
+    { name: 'Landslide', value: 14, fill: '#10b981' },
+  ];
+
   return (
     <MainLayout>
       <div className="mb-6">
@@ -68,6 +89,12 @@ const Analytics = () => {
         />
       </div>
 
+      {/* New row for voice input and satellite data */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <VoiceEmergencyInput />
+        <SatelliteWeatherData />
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <div className="lg:col-span-2">
           <Card>
@@ -78,14 +105,33 @@ const Analytics = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-80 bg-muted rounded-md flex items-center justify-center">
-                <div className="text-center">
-                  <BarChart3 className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-                  <p className="text-muted-foreground">
-                    Chart visualization would display here with response metrics over time
-                  </p>
-                </div>
-              </div>
+              <ChartContainer
+                className="h-80"
+                config={{
+                  flood: { color: '#3b82f6' },
+                  fire: { color: '#ef4444' },
+                  earthquake: { color: '#f59e0b' },
+                  hurricane: { color: '#8b5cf6' },
+                  landslide: { color: '#10b981' },
+                }}
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={responseData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <ChartTooltip
+                      content={props => (
+                        <ChartTooltipContent
+                          {...props}
+                          className="bg-background"
+                        />
+                      )}
+                    />
+                    <Bar dataKey="value" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
               <div className="grid grid-cols-3 gap-4 mt-4">
                 <div className="text-center">
                   <div className="text-sm text-muted-foreground">Response Efficiency</div>
