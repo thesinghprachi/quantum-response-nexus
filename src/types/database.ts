@@ -30,3 +30,23 @@ export interface SatelliteData {
   created_at?: string;
   updated_at?: string;
 }
+
+// Extend the Supabase Database type to include our custom tables
+declare module '@supabase/supabase-js' {
+  interface Database {
+    public: {
+      Tables: {
+        voice_commands: {
+          Row: VoiceCommand
+          Insert: VoiceCommand
+          Update: Partial<VoiceCommand>
+        }
+        satellite_data: {
+          Row: SatelliteData
+          Insert: SatelliteData
+          Update: Partial<SatelliteData>
+        }
+      }
+    }
+  }
+}

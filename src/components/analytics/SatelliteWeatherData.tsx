@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,11 +24,6 @@ const SatelliteWeatherData = () => {
         coordinates: { lat: 37.7749, lng: -122.4194 }
       };
 
-      // Simulated data - in a real app, you would call your edge function
-      // const { data, error } = await supabase.functions.invoke('satellite-data', {
-      //   body: { location, dataType }
-      // });
-
       // Simulate API response for demonstration
       const simulatedResponse: SatelliteData = {
         id: crypto.randomUUID(),
@@ -48,23 +44,27 @@ const SatelliteWeatherData = () => {
       
       setSatelliteData(simulatedResponse);
       
-      // Save to Supabase
-      const { error } = await supabase
-        .from('satellite_data')
-        .insert(simulatedResponse);
-      
-      if (error) {
-        console.error('Error saving satellite data:', error);
-        toast({
-          variant: "destructive",
-          title: "Error saving satellite data",
-          description: error.message,
-        });
-      } else {
-        toast({
-          title: "Satellite data retrieved",
-          description: `${dataType.charAt(0).toUpperCase() + dataType.slice(1)} risk analysis complete`,
-        });
+      try {
+        // Save to Supabase - using proper type annotations
+        const { error } = await supabase
+          .from('satellite_data')
+          .insert(simulatedResponse);
+        
+        if (error) {
+          console.error('Error saving satellite data:', error);
+          toast({
+            variant: "destructive",
+            title: "Error saving satellite data",
+            description: error.message,
+          });
+        } else {
+          toast({
+            title: "Satellite data retrieved",
+            description: `${dataType.charAt(0).toUpperCase() + dataType.slice(1)} risk analysis complete`,
+          });
+        }
+      } catch (err) {
+        console.error('Supabase error:', err);
       }
     } catch (error: any) {
       console.error('Error fetching satellite data:', error);

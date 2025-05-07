@@ -1,4 +1,5 @@
 
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -19,8 +20,11 @@ serve(async (req) => {
       throw new Error('Location and data type are required');
     }
 
-    // In a production environment, you would integrate with a real satellite data API
-    // This is a simulated response for demonstration purposes
+    console.log("Processing satellite data request:", { location, dataType });
+    
+    // This is a simulated response, but in a production environment,
+    // this would connect to actual satellite data APIs or quantum computing
+    // services for disaster prediction.
     const simulatedResponse = {
       id: crypto.randomUUID(),
       location_name: location.name || "Unknown",
@@ -29,17 +33,23 @@ serve(async (req) => {
       risk_level: Math.random() > 0.5 ? "high" : "medium",
       imagery_url: `https://example.com/satellite/${dataType}/${Date.now()}.jpg`,
       prediction_data: {
-        flood_probability: Math.random(),
-        landslide_probability: Math.random(),
+        flood_probability: dataType === 'flood' ? Math.random() * 0.5 + 0.5 : Math.random() * 0.3,
+        landslide_probability: dataType === 'landslide' ? Math.random() * 0.5 + 0.5 : Math.random() * 0.3,
         safe_evacuation_routes: [
-          { path: [[37.7749, -122.4194], [37.7750, -122.4180]], risk: "low" },
-          { path: [[37.7749, -122.4194], [37.7740, -122.4170]], risk: "medium" }
+          { 
+            path: [[37.7749, -122.4194], [37.7750, -122.4180]], 
+            risk: "low" 
+          },
+          { 
+            path: [[37.7749, -122.4194], [37.7740, -122.4170]], 
+            risk: "medium" 
+          }
         ]
       },
       created_at: new Date().toISOString()
     };
 
-    console.log("Retrieved satellite data:", simulatedResponse);
+    console.log("Generated satellite data response");
     
     return new Response(
       JSON.stringify(simulatedResponse),

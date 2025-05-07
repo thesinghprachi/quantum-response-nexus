@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -67,11 +68,6 @@ const VoiceEmergencyInput = () => {
       reader.onloadend = async () => {
         const base64Audio = reader.result?.toString().split(',')[1];
         
-        // Simulated data - in a real app, you would send this to your edge function
-        // const { data, error } = await supabase.functions.invoke('voice-processing', {
-        //   body: { audioData: base64Audio, sourceLanguage: 'auto' }
-        // });
-
         // Simulated response for demo purposes
         const simulatedResponse = {
           text: "Flooding reported in southwest sector. Roads blocked. Need immediate evacuation assistance.",
@@ -97,22 +93,26 @@ const VoiceEmergencyInput = () => {
           location_data: { lat: 37.7749, lng: -122.4194 }, // Simulated location
         };
         
-        const { error } = await supabase
-          .from('voice_commands')
-          .insert(voiceCommandData);
-        
-        if (error) {
-          console.error('Error saving voice command:', error);
-          toast({
-            variant: "destructive",
-            title: "Error saving command",
-            description: error.message,
-          });
-        } else {
-          toast({
-            title: "Emergency command processed",
-            description: "Your report has been recorded and translated",
-          });
+        try {
+          const { error } = await supabase
+            .from('voice_commands')
+            .insert(voiceCommandData);
+          
+          if (error) {
+            console.error('Error saving voice command:', error);
+            toast({
+              variant: "destructive",
+              title: "Error saving command",
+              description: error.message,
+            });
+          } else {
+            toast({
+              title: "Emergency command processed",
+              description: "Your report has been recorded and translated",
+            });
+          }
+        } catch (err) {
+          console.error('Supabase error:', err);
         }
       };
     } catch (error: any) {

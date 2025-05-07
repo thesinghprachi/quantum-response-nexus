@@ -1,4 +1,5 @@
 
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -19,8 +20,12 @@ serve(async (req) => {
       throw new Error('Audio data is required');
     }
 
-    // In a production environment, you would integrate with a real speech recognition API
-    // This is a simulated response for demonstration purposes
+    // This would be replaced with actual AI processing using OpenAI Whisper API
+    // or a similar voice-to-text service in a production environment
+    console.log("Processing voice command - data length:", audioData?.length || 'undefined');
+    console.log("Source language:", sourceLanguage || 'auto-detect');
+    
+    // Simulated AI processing response for demo purposes
     const simulatedResponse = {
       text: "Emergency reported at downtown area. Flooding in progress. Need immediate assistance.",
       detectedLanguage: sourceLanguage || "en",
@@ -29,8 +34,6 @@ serve(async (req) => {
       urgencyLevel: "high",
       confidence: 0.92
     };
-
-    console.log("Processed voice command:", simulatedResponse);
     
     return new Response(
       JSON.stringify(simulatedResponse),
