@@ -1,9 +1,10 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { BarChart3 } from 'lucide-react';
 import { ChartContainer } from '@/components/ui/chart';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, ChartTooltip } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface PerformanceMetricsChartProps {
   data: Array<{
@@ -15,50 +16,46 @@ interface PerformanceMetricsChartProps {
 
 const PerformanceMetricsChart = ({ data }: PerformanceMetricsChartProps) => {
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <BarChart3 className="h-5 w-5 text-accent" />
-          Response Performance Metrics
+    <Card className="h-full">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-base font-medium">
+          <BarChart3 className="h-4 w-4 text-muted-foreground inline mr-2" />
+          Response Performance by Disaster Type
         </CardTitle>
+        <Button variant="outline" size="sm">View All</Button>
       </CardHeader>
-      <CardContent>
-        <ChartContainer
-          className="h-80"
-          config={{
-            flood: { color: '#3b82f6' },
-            fire: { color: '#ef4444' },
-            earthquake: { color: '#f59e0b' },
-            hurricane: { color: '#8b5cf6' },
-            landslide: { color: '#10b981' },
-          }}
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <ChartTooltip />
-              <Bar dataKey="value" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartContainer>
-        <div className="grid grid-cols-3 gap-4 mt-4">
-          <div className="text-center">
-            <div className="text-sm text-muted-foreground">Response Efficiency</div>
-            <div className="text-xl font-bold">92%</div>
-            <div className="text-xs text-green-500">+3.5%</div>
-          </div>
-          <div className="text-center">
-            <div className="text-sm text-muted-foreground">Avg. Deployment Time</div>
-            <div className="text-xl font-bold">22 min</div>
-            <div className="text-xs text-red-500">+2 min</div>
-          </div>
-          <div className="text-center">
-            <div className="text-sm text-muted-foreground">Success Rate</div>
-            <div className="text-xl font-bold">97%</div>
-            <div className="text-xs text-green-500">+1.2%</div>
-          </div>
+      <CardContent className="pb-4">
+        <div className="h-[300px]">
+          <ChartContainer
+            config={{
+              emergency: { theme: { light: "#ef4444", dark: "#ef4444" } },
+              deployment: { theme: { light: "#3b82f6", dark: "#60a5fa" } },
+              resolution: { theme: { light: "#10b981", dark: "#34d399" } }
+            }}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                <XAxis 
+                  dataKey="name" 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12 }}
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12 }}
+                />
+                <Tooltip />
+                <Bar 
+                  dataKey="value" 
+                  radius={[4, 4, 0, 0]}
+                  barSize={40}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartContainer>
         </div>
       </CardContent>
     </Card>
