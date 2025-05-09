@@ -1,13 +1,12 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Cloud, Search, Download, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { SatelliteData } from '@/types/database';
+import { saveSatelliteData } from '@/services/satelliteDataService';
 
 const SatelliteWeatherData = () => {
   const [loading, setLoading] = useState(false);
@@ -45,10 +44,8 @@ const SatelliteWeatherData = () => {
       setSatelliteData(simulatedResponse);
       
       try {
-        // Save to Supabase - using proper type annotations
-        const { error } = await supabase
-          .from('satellite_data')
-          .insert(simulatedResponse);
+        // Save to Supabase using our service
+        const { error } = await saveSatelliteData(simulatedResponse);
         
         if (error) {
           console.error('Error saving satellite data:', error);
@@ -63,8 +60,13 @@ const SatelliteWeatherData = () => {
             description: `${dataType.charAt(0).toUpperCase() + dataType.slice(1)} risk analysis complete`,
           });
         }
-      } catch (err) {
-        console.error('Supabase error:', err);
+      } catch (err: any) {
+        console.error('Service error:', err);
+        toast({
+          variant: "destructive",
+          title: "Service error",
+          description: err.message || "Unknown error",
+        });
       }
     } catch (error: any) {
       console.error('Error fetching satellite data:', error);

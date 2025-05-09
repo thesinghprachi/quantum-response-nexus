@@ -1,12 +1,11 @@
-
 import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mic, MicOff, Volume, VolumeX } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { VoiceCommand } from '@/types/database';
+import { saveVoiceCommand } from '@/services/voiceCommandService';
 
 const VoiceEmergencyInput = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -94,9 +93,7 @@ const VoiceEmergencyInput = () => {
         };
         
         try {
-          const { error } = await supabase
-            .from('voice_commands')
-            .insert(voiceCommandData);
+          const { error } = await saveVoiceCommand(voiceCommandData);
           
           if (error) {
             console.error('Error saving voice command:', error);
@@ -111,8 +108,13 @@ const VoiceEmergencyInput = () => {
               description: "Your report has been recorded and translated",
             });
           }
-        } catch (err) {
-          console.error('Supabase error:', err);
+        } catch (err: any) {
+          console.error('Service error:', err);
+          toast({
+            variant: "destructive",
+            title: "Service error",
+            description: err.message || "Unknown error",
+          });
         }
       };
     } catch (error: any) {
