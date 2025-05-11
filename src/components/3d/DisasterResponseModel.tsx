@@ -1,8 +1,9 @@
 
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Environment, Line } from '@react-three/drei';
+import { OrbitControls, Environment } from '@react-three/drei';
 import { Mesh } from 'three';
+import { LineProps } from '@react-three/drei';
 
 const EmergencyGlobe = () => {
   const meshRef = useRef<Mesh>(null!);
@@ -50,18 +51,25 @@ const EmergencyGlobe = () => {
           </mesh>
         ))}
         
-        {/* Drone flight paths */}
-        {flightPaths.map((points, index) => (
-          <Line
-            key={index}
-            points={[
-              points[0] as [number, number, number],
-              points[1] as [number, number, number]
-            ]}
-            color="#38b2ac"
-            lineWidth={1}
-          />
-        ))}
+        {/* Drone flight paths - using primitive lines instead of drei Line */}
+        {flightPaths.map((points, index) => {
+          const start = points[0] as [number, number, number];
+          const end = points[1] as [number, number, number];
+          
+          return (
+            <line key={index}>
+              <bufferGeometry>
+                <bufferAttribute
+                  attach="attributes-position"
+                  count={2}
+                  itemSize={3}
+                  array={new Float32Array([...start, ...end])}
+                />
+              </bufferGeometry>
+              <lineBasicMaterial color="#38b2ac" linewidth={1} />
+            </line>
+          );
+        })}
       </mesh>
     </>
   );
