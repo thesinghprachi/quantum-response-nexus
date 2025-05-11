@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Environment } from '@react-three/drei';
-import { Mesh } from 'three';
+import { Mesh, BufferGeometry, Float32BufferAttribute } from 'three';
 
 const EmergencyGlobe = () => {
   const meshRef = useRef<Mesh>(null!);
@@ -43,31 +43,29 @@ const EmergencyGlobe = () => {
         />
         
         {/* Emergency Response Points */}
-        <group>
-          {emergencyPoints.map((position, index) => (
-            <mesh key={index} position={position as [number, number, number]}>
-              <sphereGeometry args={[0.1, 16, 16]} />
-              <meshStandardMaterial color="#ef4444" emissive="#ef4444" emissiveIntensity={0.5} />
-            </mesh>
-          ))}
-        </group>
+        {emergencyPoints.map((position, index) => (
+          <mesh key={index} position={position as [number, number, number]}>
+            <sphereGeometry args={[0.1, 16, 16]} />
+            <meshStandardMaterial color="#ef4444" emissive="#ef4444" emissiveIntensity={0.5} />
+          </mesh>
+        ))}
         
         {/* Drone flight paths */}
-        <group>
-          {flightPaths.map((points, index) => (
-            <line key={index}>
-              <bufferGeometry>
-                <bufferAttribute
-                  attach="attributes-position"
-                  count={2}
-                  array={new Float32Array([...points[0], ...points[1]])}
-                  itemSize={3}
-                />
-              </bufferGeometry>
+        {flightPaths.map((points, index) => {
+          // Create proper BufferGeometry for the lines
+          const geometry = new BufferGeometry();
+          const vertices = new Float32Array([
+            ...points[0],
+            ...points[1]
+          ]);
+          geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3));
+          
+          return (
+            <line key={index} geometry={geometry}>
               <lineBasicMaterial color="#38b2ac" />
             </line>
-          ))}
-        </group>
+          );
+        })}
       </mesh>
     </>
   );
