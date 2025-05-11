@@ -36,24 +36,25 @@ export async function processVoiceRecording(audioBlob: Blob) {
         // Create command data from the response
         const voiceCommandData: VoiceCommand = {
           id: crypto.randomUUID(),
-          command_text: data.text,
-          original_language: data.detectedLanguage,
+          command_text: data.text || "No text detected",
+          original_language: data.detectedLanguage || "en",
           translated_text: data.translatedText,
           target_language: data.targetLanguage,
-          urgency_level: data.urgencyLevel,
+          urgency_level: data.urgencyLevel || "low",
           location_data: { lat: 37.7749, lng: -122.4194 }, // This would ideally come from device GPS
           created_at: new Date().toISOString()
         };
         
         resolve(voiceCommandData);
-      } catch (error) {
-        console.error('Error in processVoiceRecording:', error);
-        reject(error);
+      } catch (error: any) {
+        console.error('Error in processVoiceRecording:', error.message || error);
+        reject(error.message || error);
       }
     };
     
     reader.onerror = (error) => {
-      reject(error);
+      console.error('File reader error:', error);
+      reject('Failed to read audio file');
     };
   });
 }
@@ -61,15 +62,17 @@ export async function processVoiceRecording(audioBlob: Blob) {
 export async function saveAndProcessVoiceCommand(audioBlob: Blob) {
   try {
     const voiceCommandData = await processVoiceRecording(audioBlob);
-    const { error } = await saveVoiceCommand(voiceCommandData);
+    
+    const { data, error } = await saveVoiceCommand(voiceCommandData);
     
     if (error) {
-      throw error;
+      console.error('Error saving processed voice command:', error);
+      throw new Error(error.toString());
     }
     
     return { data: voiceCommandData, error: null };
   } catch (error: any) {
-    console.error('Service error:', error);
-    return { data: null, error };
+    console.error('Service error in saveAndProcessVoiceCommand:', error.message || error);
+    return { data: null, error: error.message || "Unknown error processing voice command" };
   }
 }
