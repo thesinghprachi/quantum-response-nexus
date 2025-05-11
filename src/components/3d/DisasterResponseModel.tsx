@@ -1,8 +1,8 @@
 
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Environment } from '@react-three/drei';
-import { Mesh, BufferGeometry, Float32BufferAttribute } from 'three';
+import { OrbitControls, Environment, Line } from '@react-three/drei';
+import { Mesh } from 'three';
 
 const EmergencyGlobe = () => {
   const meshRef = useRef<Mesh>(null!);
@@ -51,21 +51,17 @@ const EmergencyGlobe = () => {
         ))}
         
         {/* Drone flight paths */}
-        {flightPaths.map((points, index) => {
-          // Create proper BufferGeometry for the lines
-          const geometry = new BufferGeometry();
-          const vertices = new Float32Array([
-            ...points[0],
-            ...points[1]
-          ]);
-          geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3));
-          
-          return (
-            <line key={index} geometry={geometry}>
-              <lineBasicMaterial color="#38b2ac" />
-            </line>
-          );
-        })}
+        {flightPaths.map((points, index) => (
+          <Line
+            key={index}
+            points={[
+              points[0] as [number, number, number],
+              points[1] as [number, number, number]
+            ]}
+            color="#38b2ac"
+            lineWidth={1}
+          />
+        ))}
       </mesh>
     </>
   );
