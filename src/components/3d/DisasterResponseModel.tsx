@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
-import { Mesh, BufferGeometry, Float32BufferAttribute } from 'three';
+import { Mesh } from 'three';
 
 const EmergencyGlobe = () => {
   const meshRef = useRef<Mesh>(null!);
@@ -31,17 +31,6 @@ const EmergencyGlobe = () => {
     [[0.3, -1.7, 0.9], [1.2, -1.2, 1.1]],     // South America to Africa
   ];
 
-  // Helper function to create line geometries
-  const createLineGeometry = (points: number[][]) => {
-    const geometry = new BufferGeometry();
-    const vertices = new Float32Array([
-      ...points[0],
-      ...points[1]
-    ]);
-    geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3));
-    return geometry;
-  };
-
   return (
     <>
       {/* Earth sphere */}
@@ -67,7 +56,7 @@ const EmergencyGlobe = () => {
         <group>
           {flightPaths.map((points, index) => (
             <line key={index}>
-              <bufferGeometry attach="geometry">
+              <bufferGeometry>
                 <bufferAttribute
                   attach="attributes-position"
                   count={2}
@@ -75,7 +64,7 @@ const EmergencyGlobe = () => {
                   itemSize={3}
                 />
               </bufferGeometry>
-              <lineBasicMaterial attach="material" color="#38b2ac" />
+              <lineBasicMaterial color="#38b2ac" />
             </line>
           ))}
         </group>
@@ -88,7 +77,7 @@ const DisasterResponseModel = () => {
   return (
     <div className="w-full h-64 mb-6 bg-gradient-to-r from-primary to-primary/60 rounded-lg overflow-hidden">
       <Canvas>
-        <PerspectiveCamera position={[0, 0, 5]} />
+        <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
         <EmergencyGlobe />
