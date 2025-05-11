@@ -1,7 +1,7 @@
 
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
+import { OrbitControls, Environment } from '@react-three/drei';
 import { Mesh } from 'three';
 
 const EmergencyGlobe = () => {
@@ -76,8 +76,7 @@ const EmergencyGlobe = () => {
 const DisasterResponseModel = () => {
   return (
     <div className="w-full h-64 mb-6 bg-gradient-to-r from-primary to-primary/60 rounded-lg overflow-hidden">
-      <Canvas>
-        <PerspectiveCamera makeDefault position={[0, 0, 5]} />
+      <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
         <EmergencyGlobe />
