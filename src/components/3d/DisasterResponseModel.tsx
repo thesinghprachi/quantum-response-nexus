@@ -2,18 +2,36 @@
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
-import { Mesh, Float32BufferAttribute, BufferGeometry, LineBasicMaterial, Vector3 } from 'three';
+import { Mesh, BufferGeometry, Float32BufferAttribute } from 'three';
 
 const EmergencyGlobe = () => {
   const meshRef = useRef<Mesh>(null!);
   
-  useFrame((state) => {
+  useFrame(() => {
     if (meshRef.current) {
       meshRef.current.rotation.y += 0.002;
     }
   });
 
-  // Create line geometries for drone flight paths
+  // Create emergency response points coordinates
+  const emergencyPoints = [
+    [0.5, 1.8, 0.8],   // North America
+    [1.8, 0.7, 0.2],   // Europe
+    [-1.5, 0.9, 1.2],  // Asia
+    [0.3, -1.7, 0.9],  // South America
+    [1.2, -1.2, 1.1],  // Africa
+    [-1.0, -1.5, 0.7], // Australia
+  ];
+
+  // Create flight paths
+  const flightPaths = [
+    [[0.5, 1.8, 0.8], [1.8, 0.7, 0.2]],       // North America to Europe
+    [[1.8, 0.7, 0.2], [-1.5, 0.9, 1.2]],      // Europe to Asia
+    [[-1.5, 0.9, 1.2], [0.3, -1.7, 0.9]],     // Asia to South America
+    [[0.3, -1.7, 0.9], [1.2, -1.2, 1.1]],     // South America to Africa
+  ];
+
+  // Helper function to create line geometries
   const createLineGeometry = (points: number[][]) => {
     const geometry = new BufferGeometry();
     const vertices = new Float32Array([
@@ -37,14 +55,7 @@ const EmergencyGlobe = () => {
         
         {/* Emergency Response Points */}
         <group>
-          {[
-            [0.5, 1.8, 0.8], // North America
-            [1.8, 0.7, 0.2], // Europe
-            [-1.5, 0.9, 1.2], // Asia
-            [0.3, -1.7, 0.9], // South America
-            [1.2, -1.2, 1.1], // Africa
-            [-1.0, -1.5, 0.7], // Australia
-          ].map((position, index) => (
+          {emergencyPoints.map((position, index) => (
             <mesh key={index} position={position as [number, number, number]}>
               <sphereGeometry args={[0.1, 16, 16]} />
               <meshStandardMaterial color="#ef4444" emissive="#ef4444" emissiveIntensity={0.5} />
@@ -52,16 +63,18 @@ const EmergencyGlobe = () => {
           ))}
         </group>
         
-        {/* Drone flight paths represented as lines */}
+        {/* Drone flight paths */}
         <group>
-          {[
-            [[0.5, 1.8, 0.8], [1.8, 0.7, 0.2]],
-            [[1.8, 0.7, 0.2], [-1.5, 0.9, 1.2]],
-            [[-1.5, 0.9, 1.2], [0.3, -1.7, 0.9]],
-            [[0.3, -1.7, 0.9], [1.2, -1.2, 1.1]],
-          ].map((points, index) => (
+          {flightPaths.map((points, index) => (
             <line key={index}>
-              <primitive object={createLineGeometry(points)} attach="geometry" />
+              <bufferGeometry attach="geometry">
+                <bufferAttribute
+                  attach="attributes-position"
+                  count={2}
+                  array={new Float32Array([...points[0], ...points[1]])}
+                  itemSize={3}
+                />
+              </bufferGeometry>
               <lineBasicMaterial attach="material" color="#38b2ac" />
             </line>
           ))}
@@ -75,8 +88,7 @@ const DisasterResponseModel = () => {
   return (
     <div className="w-full h-64 mb-6 bg-gradient-to-r from-primary to-primary/60 rounded-lg overflow-hidden">
       <Canvas>
-        {/* Fixed PerspectiveCamera props to match the expected interface */}
-        <PerspectiveCamera makeDefault position={[0, 0, 5]} />
+        <PerspectiveCamera position={[0, 0, 5]} />
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
         <EmergencyGlobe />
