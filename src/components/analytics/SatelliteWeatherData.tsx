@@ -6,7 +6,7 @@ import { Cloud, Search, Download, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { SatelliteData } from '@/types/database';
-import { saveSatelliteData } from '@/services/satelliteDataService';
+import { fetchSatelliteAnalysis } from '@/services/satelliteDataService';
 
 const SatelliteWeatherData = () => {
   const [loading, setLoading] = useState(false);
@@ -17,55 +17,24 @@ const SatelliteWeatherData = () => {
   const fetchSatelliteData = async () => {
     setLoading(true);
     try {
-      // In a real app, you would use the actual location
+      // In a real app, you would use the actual location from device GPS
       const location = {
         name: "San Francisco Bay Area",
         coordinates: { lat: 37.7749, lng: -122.4194 }
       };
 
-      // Simulate API response for demonstration
-      const simulatedResponse: SatelliteData = {
-        id: crypto.randomUUID(),
-        location_name: location.name,
-        coordinates: location.coordinates,
-        data_type: dataType,
-        risk_level: Math.random() > 0.5 ? "high" : "medium",
-        imagery_url: "https://example.com/satellite/imagery.jpg", // Placeholder URL
-        prediction_data: {
-          flood_probability: dataType === 'flood' ? 0.78 : 0.35,
-          landslide_probability: dataType === 'landslide' ? 0.65 : 0.22,
-          safe_evacuation_routes: [
-            { path: [[37.7749, -122.4194], [37.7750, -122.4180]], risk: "low" },
-            { path: [[37.7749, -122.4194], [37.7740, -122.4170]], risk: "medium" }
-          ]
-        }
-      };
+      const { data, error } = await fetchSatelliteAnalysis(location, dataType);
       
-      setSatelliteData(simulatedResponse);
+      if (error) {
+        throw error;
+      }
       
-      try {
-        // Save to Supabase using our service
-        const { error } = await saveSatelliteData(simulatedResponse);
+      if (data) {
+        setSatelliteData(data as SatelliteData);
         
-        if (error) {
-          console.error('Error saving satellite data:', error);
-          toast({
-            variant: "destructive",
-            title: "Error saving satellite data",
-            description: error.message,
-          });
-        } else {
-          toast({
-            title: "Satellite data retrieved",
-            description: `${dataType.charAt(0).toUpperCase() + dataType.slice(1)} risk analysis complete`,
-          });
-        }
-      } catch (err: any) {
-        console.error('Service error:', err);
         toast({
-          variant: "destructive",
-          title: "Service error",
-          description: err.message || "Unknown error",
+          title: "Satellite data retrieved",
+          description: `${dataType.charAt(0).toUpperCase() + dataType.slice(1)} risk analysis complete`,
         });
       }
     } catch (error: any) {

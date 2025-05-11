@@ -1,6 +1,7 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -22,29 +23,22 @@ serve(async (req) => {
 
     console.log("Processing satellite data request:", { location, dataType });
     
-    // This is a simulated response, but in a production environment,
-    // this would connect to actual satellite data APIs or quantum computing
-    // services for disaster prediction.
+    // In a production system, this would connect to actual satellite data APIs
+    // or machine learning models for disaster prediction
+    const riskLevel = calculateRiskLevel(dataType);
+    const evacuationRoutes = generateEvacuationRoutes(location.coordinates, riskLevel);
+    
     const simulatedResponse = {
       id: crypto.randomUUID(),
       location_name: location.name || "Unknown",
       coordinates: location.coordinates || { lat: 37.7749, lng: -122.4194 },
       data_type: dataType,
-      risk_level: Math.random() > 0.5 ? "high" : "medium",
+      risk_level: riskLevel,
       imagery_url: `https://example.com/satellite/${dataType}/${Date.now()}.jpg`,
       prediction_data: {
-        flood_probability: dataType === 'flood' ? Math.random() * 0.5 + 0.5 : Math.random() * 0.3,
-        landslide_probability: dataType === 'landslide' ? Math.random() * 0.5 + 0.5 : Math.random() * 0.3,
-        safe_evacuation_routes: [
-          { 
-            path: [[37.7749, -122.4194], [37.7750, -122.4180]], 
-            risk: "low" 
-          },
-          { 
-            path: [[37.7749, -122.4194], [37.7740, -122.4170]], 
-            risk: "medium" 
-          }
-        ]
+        flood_probability: dataType === 'flood' ? generateProbability(0.5, 0.9) : generateProbability(0.1, 0.4),
+        landslide_probability: dataType === 'landslide' ? generateProbability(0.5, 0.9) : generateProbability(0.1, 0.4),
+        safe_evacuation_routes: evacuationRoutes
       },
       created_at: new Date().toISOString()
     };
@@ -75,3 +69,59 @@ serve(async (req) => {
     );
   }
 });
+
+// Helper functions for generating simulated disaster data
+function calculateRiskLevel(dataType: string): string {
+  const riskLevels = ["low", "medium", "high"];
+  // Weight towards higher risk for certain disaster types
+  if (dataType === 'flood' || dataType === 'fire') {
+    const weights = [0.1, 0.3, 0.6]; // Higher chance of high risk
+    const rand = Math.random();
+    if (rand < weights[0]) return riskLevels[0];
+    if (rand < weights[0] + weights[1]) return riskLevels[1];
+    return riskLevels[2];
+  }
+  
+  // More balanced risk for other types
+  const index = Math.floor(Math.random() * riskLevels.length);
+  return riskLevels[index];
+}
+
+function generateProbability(min: number, max: number): number {
+  return Math.random() * (max - min) + min;
+}
+
+function generateEvacuationRoutes(coordinates: {lat: number, lng: number}, riskLevel: string) {
+  // Generate 1-3 evacuation routes based on risk level
+  const routeCount = riskLevel === "high" ? 3 : riskLevel === "medium" ? 2 : 1;
+  const routes = [];
+  
+  for (let i = 0; i < routeCount; i++) {
+    // Generate random path point offsets
+    const path = [
+      [coordinates.lat, coordinates.lng], // Starting point
+      [
+        coordinates.lat + (Math.random() * 0.02 - 0.01), 
+        coordinates.lng + (Math.random() * 0.02 - 0.01)
+      ],
+      [
+        coordinates.lat + (Math.random() * 0.04 - 0.02), 
+        coordinates.lng + (Math.random() * 0.04 - 0.02)
+      ]
+    ];
+    
+    // Assign route risk level (safer routes for lower risk scenarios)
+    let routeRisk;
+    if (i === 0 && riskLevel !== "high") {
+      routeRisk = "low";
+    } else if (i === routes.length - 1 && riskLevel === "high") {
+      routeRisk = "medium";
+    } else {
+      routeRisk = ["low", "medium"][Math.floor(Math.random() * 2)];
+    }
+    
+    routes.push({ path, risk: routeRisk });
+  }
+  
+  return routes;
+}
