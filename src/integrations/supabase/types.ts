@@ -36,6 +36,60 @@ export type Database = {
         }
         Relationships: []
       }
+      SatelliteData: {
+        Row: {
+          created_at: string
+          flood_risk: string | null
+          id: number
+          landslide_risk: string | null
+          raw_data: Json | null
+          safe_routes: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          flood_risk?: string | null
+          id?: number
+          landslide_risk?: string | null
+          raw_data?: Json | null
+          safe_routes?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          flood_risk?: string | null
+          id?: number
+          landslide_risk?: string | null
+          raw_data?: Json | null
+          safe_routes?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      VoiceCommand: {
+        Row: {
+          created_at: string
+          id: number
+          transcript: string | null
+          urgency_level: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          transcript?: string | null
+          urgency_level?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          transcript?: string | null
+          urgency_level?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

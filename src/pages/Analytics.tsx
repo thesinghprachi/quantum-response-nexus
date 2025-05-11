@@ -9,6 +9,7 @@ import SatelliteWeatherData from '@/components/analytics/SatelliteWeatherData';
 import PerformanceMetricsChart from '@/components/analytics/PerformanceMetricsChart';
 import ResourceAllocationChart from '@/components/analytics/ResourceAllocationChart';
 import DisasterResponseTabs from '@/components/analytics/DisasterResponseTabs';
+import DisasterResponseModel from '@/components/3d/DisasterResponseModel';
 
 const Analytics = () => {
   // Sample data for the chart
@@ -23,6 +24,10 @@ const Analytics = () => {
   return (
     <MainLayout>
       <PageHeader />
+      
+      {/* 3D Emergency Response Model */}
+      <DisasterResponseModel />
+      
       <FilterBar />
       <MetricCardsSection />
 
