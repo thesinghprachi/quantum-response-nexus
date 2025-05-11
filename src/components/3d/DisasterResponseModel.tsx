@@ -1,8 +1,8 @@
 
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, useGLTF, Environment } from '@react-three/drei';
-import { Mesh } from 'three';
+import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
+import { Mesh, Float32BufferAttribute, BufferGeometry, LineBasicMaterial } from 'three';
 
 const EmergencyGlobe = () => {
   const meshRef = useRef<Mesh>(null!);
@@ -12,6 +12,17 @@ const EmergencyGlobe = () => {
       meshRef.current.rotation.y += 0.002;
     }
   });
+
+  // Create line geometries for drone flight paths
+  const createLineGeometry = (points: number[][]) => {
+    const geometry = new BufferGeometry();
+    const vertices = new Float32Array([
+      ...points[0],
+      ...points[1]
+    ]);
+    geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3));
+    return geometry;
+  };
 
   return (
     <>
@@ -50,18 +61,8 @@ const EmergencyGlobe = () => {
             [[0.3, -1.7, 0.9], [1.2, -1.2, 1.1]],
           ].map((points, index) => (
             <line key={index}>
-              <bufferGeometry attach="geometry">
-                <bufferAttribute
-                  attachObject={['attributes', 'position']}
-                  array={new Float32Array([
-                    ...points[0],
-                    ...points[1]
-                  ])}
-                  count={2}
-                  itemSize={3}
-                />
-              </bufferGeometry>
-              <lineBasicMaterial attach="material" color="#38b2ac" linewidth={2} />
+              <primitive object={createLineGeometry(points)} attach="geometry" />
+              <lineBasicMaterial attach="material" color="#38b2ac" />
             </line>
           ))}
         </group>
