@@ -1,9 +1,8 @@
 
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Environment } from '@react-three/drei';
-import { Mesh } from 'three';
-import { LineProps } from '@react-three/drei';
+import { Mesh, BufferGeometry, Float32BufferAttribute, LineBasicMaterial } from 'three';
 
 const EmergencyGlobe = () => {
   const meshRef = useRef<Mesh>(null!);
@@ -32,6 +31,21 @@ const EmergencyGlobe = () => {
     [[0.3, -1.7, 0.9], [1.2, -1.2, 1.1]],     // South America to Africa
   ];
 
+  // Create line geometries and materials for flight paths
+  const lines = useMemo(() => 
+    flightPaths.map(([start, end]) => {
+      const points = [];
+      points.push(...start);
+      points.push(...end);
+      
+      const geometry = new BufferGeometry();
+      geometry.setAttribute('position', new Float32BufferAttribute(points, 3));
+      const material = new LineBasicMaterial({ color: '#38b2ac' });
+      
+      return { geometry, material };
+    }), 
+  []);
+
   return (
     <>
       {/* Earth sphere */}
@@ -51,25 +65,10 @@ const EmergencyGlobe = () => {
           </mesh>
         ))}
         
-        {/* Drone flight paths - using primitive lines instead of drei Line */}
-        {flightPaths.map((points, index) => {
-          const start = points[0] as [number, number, number];
-          const end = points[1] as [number, number, number];
-          
-          return (
-            <line key={index}>
-              <bufferGeometry>
-                <bufferAttribute
-                  attach="attributes-position"
-                  count={2}
-                  itemSize={3}
-                  array={new Float32Array([...start, ...end])}
-                />
-              </bufferGeometry>
-              <lineBasicMaterial color="#38b2ac" linewidth={1} />
-            </line>
-          );
-        })}
+        {/* Drone flight paths */}
+        {lines.map((line, index) => (
+          <lineSegments key={index} geometry={line.geometry} material={line.material} />
+        ))}
       </mesh>
     </>
   );
