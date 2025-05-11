@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
-import { Mesh, Float32BufferAttribute, BufferGeometry, LineBasicMaterial } from 'three';
+import { Mesh, Float32BufferAttribute, BufferGeometry, LineBasicMaterial, Vector3 } from 'three';
 
 const EmergencyGlobe = () => {
   const meshRef = useRef<Mesh>(null!);
@@ -75,6 +75,7 @@ const DisasterResponseModel = () => {
   return (
     <div className="w-full h-64 mb-6 bg-gradient-to-r from-primary to-primary/60 rounded-lg overflow-hidden">
       <Canvas>
+        {/* Fixed PerspectiveCamera props to match the expected interface */}
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
