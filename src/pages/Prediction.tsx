@@ -1,12 +1,44 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Radar, AlertTriangle, Play, Pause, RefreshCw, Download } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 const Prediction = () => {
+  const [isRunning, setIsRunning] = useState(false);
+  const [processingPercentage, setProcessingPercentage] = useState(67);
+  const [selectedRegion, setSelectedRegion] = useState('All Regions');
+  const [selectedDisasterType, setSelectedDisasterType] = useState('All Types');
+  const [selectedTimeHorizon, setSelectedTimeHorizon] = useState('24 Hours');
+
+  const handleRunPrediction = () => {
+    setIsRunning(true);
+    toast({
+      title: "Quantum AI Prediction",
+      description: "Starting prediction analysis for " + selectedRegion,
+    });
+    
+    // Simulate processing completion
+    setTimeout(() => {
+      setIsRunning(false);
+      setProcessingPercentage(100);
+      toast({
+        title: "Prediction Complete",
+        description: "Analysis for " + selectedRegion + " successfully generated",
+      });
+      setTimeout(() => setProcessingPercentage(67), 2000);
+    }, 3000);
+  };
+
+  const handleUpdateData = () => {
+    toast({
+      title: "Updating Data Sources",
+      description: "Refreshing prediction data from all connected sources",
+    });
+  };
+
   return (
     <MainLayout>
       <div className="mb-6">
@@ -27,7 +59,11 @@ const Prediction = () => {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Region Selection</label>
-              <select className="w-full bg-muted rounded-md p-2 text-sm border border-border">
+              <select 
+                className="w-full bg-muted rounded-md p-2 text-sm border border-border"
+                value={selectedRegion}
+                onChange={(e) => setSelectedRegion(e.target.value)}
+              >
                 <option>All Regions</option>
                 <option>Riverside County</option>
                 <option>Mountain Valley</option>
@@ -37,7 +73,11 @@ const Prediction = () => {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Disaster Type</label>
-              <select className="w-full bg-muted rounded-md p-2 text-sm border border-border">
+              <select 
+                className="w-full bg-muted rounded-md p-2 text-sm border border-border"
+                value={selectedDisasterType}
+                onChange={(e) => setSelectedDisasterType(e.target.value)}
+              >
                 <option>All Types</option>
                 <option>Flood</option>
                 <option>Earthquake</option>
@@ -47,7 +87,11 @@ const Prediction = () => {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Time Horizon</label>
-              <select className="w-full bg-muted rounded-md p-2 text-sm border border-border">
+              <select 
+                className="w-full bg-muted rounded-md p-2 text-sm border border-border"
+                value={selectedTimeHorizon}
+                onChange={(e) => setSelectedTimeHorizon(e.target.value)}
+              >
                 <option>24 Hours</option>
                 <option>48 Hours</option>
                 <option>72 Hours</option>
@@ -57,11 +101,30 @@ const Prediction = () => {
             <div className="space-y-2">
               <label className="text-sm font-medium">Prediction Actions</label>
               <div className="flex gap-2">
-                <Button size="sm" className="bg-accent hover:bg-accent/80 flex-1">
-                  <Play className="h-4 w-4 mr-1" />
-                  Run
+                <Button 
+                  size="sm" 
+                  className="bg-accent hover:bg-accent/80 flex-1"
+                  onClick={handleRunPrediction}
+                  disabled={isRunning}
+                >
+                  {isRunning ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-1 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-4 w-4 mr-1" />
+                      Run
+                    </>
+                  )}
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1">
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={handleUpdateData}
+                >
                   <RefreshCw className="h-4 w-4 mr-1" />
                   Update
                 </Button>
@@ -104,12 +167,12 @@ const Prediction = () => {
                       </div>
                       <div className="text-right">
                         <span className="text-xs font-semibold inline-block text-accent">
-                          67%
+                          {processingPercentage}%
                         </span>
                       </div>
                     </div>
                     <div className="overflow-hidden h-2 mb-1 text-xs flex rounded bg-muted">
-                      <div style={{ width: "67%" }} className="quantum-animation rounded"></div>
+                      <div style={{ width: `${processingPercentage}%` }} className="quantum-animation rounded"></div>
                     </div>
                     <p className="text-xs text-muted-foreground mt-4">
                       The quantum algorithm is currently processing environmental data, satellite imagery, 

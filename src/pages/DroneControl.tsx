@@ -1,12 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Plane, Battery, Package, AlertCircle, RefreshCw, Plus, BarChart3, Zap, Map, Wrench } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { toast } from '@/components/ui/use-toast';
 
 const DroneControl = () => {
+  const [selectedMissionType, setSelectedMissionType] = useState('Resource Delivery');
+  const [selectedDrone, setSelectedDrone] = useState('DR-103 (Charging)');
+  const [selectedLocation, setSelectedLocation] = useState('Riverside County');
+  
+  const handleRefresh = () => {
+    toast({
+      title: "Drone Data Refreshed",
+      description: "All drone information updated to latest status",
+    });
+  };
+  
+  const handleNewMission = () => {
+    toast({
+      title: "New Mission",
+      description: "Creating a new drone mission. Please configure parameters.",
+    });
+  };
+  
+  const handleScheduleMission = () => {
+    toast({
+      title: "Mission Scheduled",
+      description: `New ${selectedMissionType} mission scheduled for ${selectedDrone} to ${selectedLocation}`,
+    });
+  };
+
   return (
     <MainLayout>
       <div className="mb-6">
@@ -24,11 +50,11 @@ const DroneControl = () => {
                 <Plane className="h-5 w-5 text-accent" />
                 Active Drone Missions
                 <div className="ml-auto flex gap-2">
-                  <Button size="sm" variant="outline">
+                  <Button size="sm" variant="outline" onClick={handleRefresh}>
                     <RefreshCw className="h-4 w-4 mr-1" />
                     Refresh
                   </Button>
-                  <Button size="sm" className="bg-accent hover:bg-accent/80">
+                  <Button size="sm" className="bg-accent hover:bg-accent/80" onClick={handleNewMission}>
                     <Plus className="h-4 w-4 mr-1" />
                     New Mission
                   </Button>
@@ -183,7 +209,11 @@ const DroneControl = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2 md:col-span-2">
                   <label className="text-sm font-medium">Mission Type</label>
-                  <select className="w-full bg-muted rounded-md p-2 text-sm border border-border">
+                  <select 
+                    className="w-full bg-muted rounded-md p-2 text-sm border border-border"
+                    value={selectedMissionType}
+                    onChange={(e) => setSelectedMissionType(e.target.value)}
+                  >
                     <option>Resource Delivery</option>
                     <option>Surveillance</option>
                     <option>Search and Rescue</option>
@@ -192,7 +222,11 @@ const DroneControl = () => {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Select Drone</label>
-                  <select className="w-full bg-muted rounded-md p-2 text-sm border border-border">
+                  <select 
+                    className="w-full bg-muted rounded-md p-2 text-sm border border-border"
+                    value={selectedDrone}
+                    onChange={(e) => setSelectedDrone(e.target.value)}
+                  >
                     <option>DR-103 (Charging)</option>
                     <option>DR-105 (Ready)</option>
                     <option>DR-106 (Ready)</option>
@@ -201,7 +235,11 @@ const DroneControl = () => {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Target Location</label>
-                  <select className="w-full bg-muted rounded-md p-2 text-sm border border-border">
+                  <select 
+                    className="w-full bg-muted rounded-md p-2 text-sm border border-border"
+                    value={selectedLocation}
+                    onChange={(e) => setSelectedLocation(e.target.value)}
+                  >
                     <option>Riverside County</option>
                     <option>Mountain Valley</option>
                     <option>Coastal Town</option>
@@ -226,7 +264,10 @@ const DroneControl = () => {
                   </select>
                 </div>
                 <div className="md:col-span-3 flex justify-end mt-2">
-                  <Button className="bg-accent hover:bg-accent/80">
+                  <Button 
+                    className="bg-accent hover:bg-accent/80"
+                    onClick={handleScheduleMission}
+                  >
                     Schedule Mission
                   </Button>
                 </div>

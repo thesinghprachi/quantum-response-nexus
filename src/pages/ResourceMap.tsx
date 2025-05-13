@@ -1,12 +1,22 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Package, Droplets, LucideIcon, Pill, Tent, Battery, Radio, Sandwich, MapPin, Layers, ChevronDown, Filter } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 const ResourceMap = () => {
+  const [selectedResourcePoint, setSelectedResourcePoint] = useState<string | null>(null);
+  
+  const handleViewAllResources = () => {
+    toast({
+      title: "All Resources",
+      description: "Displaying all available emergency resources",
+    });
+  };
+  
   return (
     <MainLayout>
       <div className="mb-6">
@@ -51,30 +61,65 @@ const ResourceMap = () => {
                   position={{ x: 20, y: 30 }} 
                   name="Water Station Alpha" 
                   status="active" 
+                  onClick={() => {
+                    setSelectedResourcePoint("Water Station Alpha");
+                    toast({
+                      title: "Resource Selected",
+                      description: "Water Station Alpha selected"
+                    });
+                  }}
                 />
                 <ResourcePoint 
                   type="medical" 
                   position={{ x: 60, y: 40 }} 
                   name="Medical Center" 
-                  status="active" 
+                  status="active"
+                  onClick={() => {
+                    setSelectedResourcePoint("Medical Center");
+                    toast({
+                      title: "Resource Selected",
+                      description: "Medical Center selected"
+                    });
+                  }}
                 />
                 <ResourcePoint 
                   type="food" 
                   position={{ x: 30, y: 70 }} 
                   name="Food Distribution" 
-                  status="active" 
+                  status="active"
+                  onClick={() => {
+                    setSelectedResourcePoint("Food Distribution");
+                    toast({
+                      title: "Resource Selected",
+                      description: "Food Distribution selected"
+                    });
+                  }}
                 />
                 <ResourcePoint 
                   type="shelter" 
                   position={{ x: 80, y: 20 }} 
                   name="Emergency Shelter" 
-                  status="active" 
+                  status="active"
+                  onClick={() => {
+                    setSelectedResourcePoint("Emergency Shelter");
+                    toast({
+                      title: "Resource Selected",
+                      description: "Emergency Shelter selected"
+                    });
+                  }}
                 />
                 <ResourcePoint 
                   type="water" 
                   position={{ x: 50, y: 60 }} 
                   name="Water Station Beta" 
-                  status="scheduled" 
+                  status="scheduled"
+                  onClick={() => {
+                    setSelectedResourcePoint("Water Station Beta");
+                    toast({
+                      title: "Resource Selected",
+                      description: "Water Station Beta selected"
+                    });
+                  }}
                 />
 
                 {/* Drone paths */}
@@ -149,23 +194,63 @@ const ResourceMap = () => {
                     Icon={Sandwich}
                     color="text-orange-400"
                   />
-                  <Button variant="outline" size="sm" className="w-full">
+                  <Button variant="outline" size="sm" className="w-full" onClick={handleViewAllResources}>
                     View All Resources
                   </Button>
                 </TabsContent>
                 
                 <TabsContent value="allocated" className="space-y-4 mt-4">
-                  {/* Allocated resources content */}
-                  <div className="text-center text-sm text-muted-foreground py-8">
-                    Select a resource point on the map to view allocation details
-                  </div>
+                  <ResourceItem
+                    name="Water Supplies (Allocated)"
+                    total={1000}
+                    allocated={650}
+                    Icon={Droplets}
+                    color="text-blue-400"
+                  />
+                  <ResourceItem
+                    name="Medical Supplies (Allocated)"
+                    total={500}
+                    allocated={200}
+                    Icon={Pill}
+                    color="text-green-400"
+                  />
+                  <ResourceItem
+                    name="Emergency Shelter (Allocated)"
+                    total={200}
+                    allocated={180}
+                    Icon={Tent}
+                    color="text-yellow-400"
+                  />
+                  <Button variant="outline" size="sm" className="w-full" onClick={handleViewAllResources}>
+                    View All Allocated Resources
+                  </Button>
                 </TabsContent>
                 
                 <TabsContent value="available" className="space-y-4 mt-4">
-                  {/* Available resources content */}
-                  <div className="text-center text-sm text-muted-foreground py-8">
-                    Select a resource type to view availability details
-                  </div>
+                  <ResourceItem
+                    name="Water Supplies (Available)"
+                    total={1000}
+                    allocated={0}
+                    Icon={Droplets}
+                    color="text-blue-400"
+                  />
+                  <ResourceItem
+                    name="Medical Supplies (Available)"
+                    total={500}
+                    allocated={0}
+                    Icon={Pill}
+                    color="text-green-400"
+                  />
+                  <ResourceItem
+                    name="Food Packs (Available)"
+                    total={1500}
+                    allocated={0}
+                    Icon={Sandwich}
+                    color="text-orange-400"
+                  />
+                  <Button variant="outline" size="sm" className="w-full" onClick={handleViewAllResources}>
+                    View All Available Resources
+                  </Button>
                 </TabsContent>
               </Tabs>
             </CardContent>
@@ -208,9 +293,10 @@ interface ResourcePointProps {
   position: { x: number; y: number };
   name: string;
   status: 'active' | 'scheduled' | 'depleted';
+  onClick?: () => void;
 }
 
-const ResourcePoint = ({ type, position, name, status }: ResourcePointProps) => {
+const ResourcePoint = ({ type, position, name, status, onClick }: ResourcePointProps) => {
   const getColor = () => {
     switch (type) {
       case 'water': return 'bg-blue-500 text-blue-100';
@@ -239,6 +325,7 @@ const ResourcePoint = ({ type, position, name, status }: ResourcePointProps) => 
         top: `${position.y}%`, 
         transform: 'translate(-50%, -50%)' 
       }}
+      onClick={onClick}
     >
       <div className={`h-8 w-8 rounded-full ${getColor()} flex items-center justify-center ${status === 'active' ? 'animate-pulse' : ''}`}>
         {getIcon()}
