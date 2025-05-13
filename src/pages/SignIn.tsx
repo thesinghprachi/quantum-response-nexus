@@ -26,14 +26,14 @@ const SignIn = () => {
       setLoading(false);
       
       // Demo credentials (in real app, this would be handled by backend)
-      if (email === 'admin@drn.com' && password === 'password') {
+      if (email === 'admin@soterra.com' && password === 'password') {
         // Store auth token in localStorage (in a real app, would be JWT)
         localStorage.setItem('auth_token', 'demo_token_123');
         localStorage.setItem('user_role', 'admin');
         
         toast({
           title: "Authentication successful",
-          description: "Welcome to Disaster Response Nexus",
+          description: "Welcome to Soterra",
           variant: "default",
         });
         
@@ -55,9 +55,9 @@ const SignIn = () => {
         <CardHeader className="space-y-1">
           <div className="flex items-center gap-2 mb-2">
             <div className="h-9 w-9 rounded-full bg-gradient-to-r from-accent to-secondary flex items-center justify-center text-white font-bold text-lg">
-              DR
+              ST
             </div>
-            <span className="font-bold text-xl">Disaster Response Nexus</span>
+            <span className="font-bold text-xl">Soterra</span>
           </div>
           <CardTitle className="text-2xl">Sign In</CardTitle>
           <CardDescription>
@@ -71,7 +71,7 @@ const SignIn = () => {
               <Input 
                 id="email" 
                 type="email" 
-                placeholder="admin@drn.com" 
+                placeholder="admin@soterra.com" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -113,7 +113,7 @@ const SignIn = () => {
               <AlertTriangle className="h-4 w-4 text-secondary flex-shrink-0 mt-0.5" />
               <div>
                 <p className="font-medium">Demo Credentials</p>
-                <p>Email: admin@drn.com</p>
+                <p>Email: admin@soterra.com</p>
                 <p>Password: password</p>
               </div>
             </div>

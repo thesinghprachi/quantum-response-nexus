@@ -37,9 +37,9 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         </Button>
         <div className="flex items-center gap-2" onClick={() => navigate('/')} style={{cursor: 'pointer'}}>
           <div className="h-9 w-9 rounded-full bg-gradient-to-r from-accent to-secondary flex items-center justify-center text-white font-bold text-lg">
-            DR
+            ST
           </div>
-          <h1 className="text-primary-foreground font-bold text-xl hidden sm:block">Disaster Response Nexus</h1>
+          <h1 className="text-primary-foreground font-bold text-xl hidden sm:block">Soterra</h1>
         </div>
       </div>
 
