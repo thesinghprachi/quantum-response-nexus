@@ -36,8 +36,14 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
           <Menu size={24} />
         </Button>
         <div className="flex items-center gap-2" onClick={() => navigate('/')} style={{cursor: 'pointer'}}>
-          <div className="h-9 w-9 rounded-full bg-gradient-to-r from-accent to-secondary flex items-center justify-center text-white font-bold text-lg">
-            ST
+          <div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center text-white overflow-hidden relative">
+            {/* Earth-inspired logo design */}
+            <div className="absolute inset-0 bg-blue-500 rounded-full"></div>
+            <div className="absolute inset-1 bg-green-500 rounded-full rotate-45 translate-x-1"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/80 to-transparent rounded-full"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="font-bold text-white text-lg relative z-10">ST</span>
+            </div>
           </div>
           <h1 className="text-primary-foreground font-bold text-xl hidden sm:block">Soterra</h1>
         </div>

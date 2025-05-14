@@ -54,8 +54,14 @@ const SignIn = () => {
       <Card className="mx-auto max-w-md w-full relative z-10 border-border/50 bg-card/90 backdrop-blur-sm">
         <CardHeader className="space-y-1">
           <div className="flex items-center gap-2 mb-2">
-            <div className="h-9 w-9 rounded-full bg-gradient-to-r from-accent to-secondary flex items-center justify-center text-white font-bold text-lg">
-              ST
+            {/* Earth-inspired logo design */}
+            <div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center text-white overflow-hidden relative">
+              <div className="absolute inset-0 bg-blue-500 rounded-full"></div>
+              <div className="absolute inset-1 bg-green-500 rounded-full rotate-45 translate-x-1"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/80 to-transparent rounded-full"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="font-bold text-white text-lg relative z-10">ST</span>
+              </div>
             </div>
             <span className="font-bold text-xl">Soterra</span>
           </div>
