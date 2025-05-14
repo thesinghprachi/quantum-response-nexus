@@ -59,9 +59,6 @@ const SignIn = () => {
               <div className="absolute inset-0 bg-blue-500 rounded-full"></div>
               <div className="absolute inset-1 bg-green-500 rounded-full rotate-45 translate-x-1"></div>
               <div className="absolute inset-0 bg-gradient-to-br from-blue-400/80 to-transparent rounded-full"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="font-bold text-white text-lg relative z-10">ST</span>
-              </div>
             </div>
             <span className="font-bold text-xl">Soterra</span>
           </div>
